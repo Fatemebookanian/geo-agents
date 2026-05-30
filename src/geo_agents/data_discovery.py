@@ -38,28 +38,128 @@ class DataDiscoveryCapability:
                    "(OpenStreetMap via OSMnx, and Natural Earth for country/admin "
                    "boundaries). Use when the user needs to FIND or DOWNLOAD data "
                    "they do not already have.")
-    keywords = ["download", "discover", "find data", "fetch", "get data", "obtain",
-                "acquire", "openstreetmap", "osm", "natural earth", "boundary",
-                "boundaries", "road network", "buildings", "amenities", "parks",
-                "rivers", "landuse", "search for data"]
+    keywords = [
+        # --- افعالِ درخواست داده ---
+        "download", "discover", "find data", "fetch", "get data", "obtain",
+        "acquire", "search for data", "extract", "export", "pull", "load",
+        # --- منابع و مرز ---
+        "openstreetmap", "osm", "overpass", "natural earth",
+        "boundary", "boundaries", "admin", "administrative", "outline", "extent",
+        # --- جاده و حمل‌ونقل (highway/railway/aeroway) ---
+        "road network", "roads", "highway", "street", "streets", "motorway",
+        "footway", "cycleway", "path", "track", "pedestrian",
+        "railway", "rail", "subway", "tram", "train station", "bus stop",
+        "public transport", "airport", "runway",
+        # --- ساختمان و سازه (building/man_made) ---
+        "buildings", "building", "house", "tower", "bridge", "lighthouse",
+        # --- فضای سبز و تفریح (leisure) ---
+        "parks", "park", "garden", "playground", "pitch", "stadium",
+        "swimming pool", "leisure",
+        # --- طبیعت و آب (natural/waterway) ---
+        "natural", "water", "wood", "forest", "tree", "peak", "beach", "wetland",
+        "rivers", "river", "stream", "canal", "lake", "waterway", "coastline",
+        # --- کاربری زمین (landuse) ---
+        "landuse", "residential area", "commercial", "industrial", "farmland",
+        "meadow", "grass", "retail", "cemetery", "orchard", "vineyard",
+        # --- خدمات و امکانات (amenity/healthcare) ---
+        "amenities", "amenity", "restaurant", "restaurants", "cafe", "bar",
+        "fast food", "school", "schools", "university", "college", "kindergarten",
+        "hospital", "hospitals", "clinic", "pharmacy", "dentist",
+        "bank", "atm", "post office", "police", "fire station", "library",
+        "fuel", "gas station", "parking", "toilets", "drinking water",
+        "place of worship", "mosque", "church", "fountain", "bench",
+        # --- خرید (shop) ---
+        "shop", "shops", "supermarket", "bakery", "convenience", "mall",
+        "clothes", "market",
+        # --- گردشگری و تاریخ (tourism/historic) ---
+        "tourism", "landmark", "hotel", "hostel", "guest house", "museum",
+        "attraction", "viewpoint", "artwork", "information",
+        "historic", "castle", "monument", "memorial", "ruins", "archaeological site",
+        # --- زیرساخت (power/barrier/office) ---
+        "power", "power line", "substation", "barrier", "fence", "wall",
+        "gate", "office",
+        # --- اصطلاحات فارسیِ درخواست (فقط برای تشخیص قصد کاربر) ---
+        "دانلود", "دریافت", "بگیر", "پیدا کن", "جستجو", "استخراج",
+        "داده", "اطلاعات", "نقشه", "عوارض", "لایه",
+        "مرز", "محدوده", "مرزها", "مرز اداری",
+        "جاده", "خیابان", "بزرگراه", "راه", "راه‌آهن", "مترو", "ایستگاه", "فرودگاه",
+        "ساختمان", "خانه", "برج", "پل",
+        "پارک", "باغ", "زمین بازی", "ورزشگاه", "استخر",
+        "آب", "رودخانه", "نهر", "دریاچه", "جنگل", "ساحل", "درخت",
+        "کاربری زمین", "مسکونی", "تجاری", "صنعتی", "کشاورزی", "قبرستان",
+        "امکانات", "خدمات", "رستوران", "کافه", "مدرسه", "دانشگاه",
+        "بیمارستان", "داروخانه", "درمانگاه", "بانک", "خودپرداز",
+        "پلیس", "آتش‌نشانی", "کتابخانه", "پارکینگ", "پمپ بنزین",
+        "مسجد", "کلیسا", "نیایشگاه", "آبنما", "نیمکت",
+        "فروشگاه", "سوپرمارکت", "نانوایی", "بازار",
+        "هتل", "موزه", "جاذبه", "گردشگری", "تاریخی", "قلعه", "بنای یادبود",
+        "برق", "دکل", "نرده", "دیوار", "دفتر",
+    ]
 
     # Map common words in the request to OSM tag filters.
     _OSM_TAGS = {
+        # highway
         "road": {"highway": True}, "roads": {"highway": True},
         "street": {"highway": True}, "highway": {"highway": True},
-        "building": {"building": True}, "buildings": {"building": True},
-        "park": {"leisure": "park"}, "parks": {"leisure": "park"},
-        "water": {"natural": "water"}, "river": {"waterway": "river"},
-        "rivers": {"waterway": "river"}, "waterway": {"waterway": True},
-        "forest": {"landuse": "forest"}, "landuse": {"landuse": True},
-        "restaurant": {"amenity": "restaurant"}, "restaurants": {"amenity": "restaurant"},
-        "school": {"amenity": "school"}, "schools": {"amenity": "school"},
-        "hospital": {"amenity": "hospital"}, "hospitals": {"amenity": "hospital"},
-        "amenity": {"amenity": True}, "amenities": {"amenity": True},
-        "shop": {"shop": True}, "shops": {"shop": True},
+        "motorway": {"highway": "motorway"}, "footway": {"highway": "footway"},
+        "path": {"highway": "path"}, "cycleway": {"highway": "cycleway"},
+        "pedestrian": {"highway": "pedestrian"}, "bus_stop": {"highway": "bus_stop"},
+        # railway / aeroway
         "railway": {"railway": True}, "rail": {"railway": True},
-        "boundary": {"boundary": "administrative"},
-        "landmark": {"tourism": True}, "tourism": {"tourism": True},
+        "subway": {"railway": "subway"}, "tram": {"railway": "tram"},
+        "station": {"railway": "station"}, "airport": {"aeroway": "aerodrome"},
+        "runway": {"aeroway": "runway"},
+        # building / man_made
+        "building": {"building": True}, "buildings": {"building": True},
+        "tower": {"man_made": "tower"}, "bridge": {"man_made": "bridge"},
+        "lighthouse": {"man_made": "lighthouse"},
+        # leisure
+        "park": {"leisure": "park"}, "parks": {"leisure": "park"},
+        "garden": {"leisure": "garden"}, "playground": {"leisure": "playground"},
+        "pitch": {"leisure": "pitch"}, "stadium": {"leisure": "stadium"},
+        "swimming_pool": {"leisure": "swimming_pool"},
+        # natural / waterway
+        "water": {"natural": "water"}, "wood": {"natural": "wood"},
+        "tree": {"natural": "tree"}, "beach": {"natural": "beach"},
+        "peak": {"natural": "peak"}, "wetland": {"natural": "wetland"},
+        "river": {"waterway": "river"}, "rivers": {"waterway": "river"},
+        "stream": {"waterway": "stream"}, "canal": {"waterway": "canal"},
+        "waterway": {"waterway": True},
+        # landuse
+        "forest": {"landuse": "forest"}, "landuse": {"landuse": True},
+        "farmland": {"landuse": "farmland"}, "residential": {"landuse": "residential"},
+        "commercial": {"landuse": "commercial"}, "industrial": {"landuse": "industrial"},
+        "meadow": {"landuse": "meadow"}, "cemetery": {"landuse": "cemetery"},
+        # amenity
+        "amenity": {"amenity": True}, "amenities": {"amenity": True},
+        "restaurant": {"amenity": "restaurant"}, "restaurants": {"amenity": "restaurant"},
+        "cafe": {"amenity": "cafe"}, "bar": {"amenity": "bar"},
+        "fast_food": {"amenity": "fast_food"},
+        "school": {"amenity": "school"}, "schools": {"amenity": "school"},
+        "university": {"amenity": "university"}, "college": {"amenity": "college"},
+        "hospital": {"amenity": "hospital"}, "hospitals": {"amenity": "hospital"},
+        "clinic": {"amenity": "clinic"}, "pharmacy": {"amenity": "pharmacy"},
+        "bank": {"amenity": "bank"}, "atm": {"amenity": "atm"},
+        "police": {"amenity": "police"}, "fire_station": {"amenity": "fire_station"},
+        "library": {"amenity": "library"}, "fuel": {"amenity": "fuel"},
+        "parking": {"amenity": "parking"}, "fountain": {"amenity": "fountain"},
+        "place_of_worship": {"amenity": "place_of_worship"},
+        "mosque": {"amenity": "place_of_worship"},
+        # shop
+        "shop": {"shop": True}, "shops": {"shop": True},
+        "supermarket": {"shop": "supermarket"}, "bakery": {"shop": "bakery"},
+        "mall": {"shop": "mall"},
+        # tourism / historic
+        "tourism": {"tourism": True}, "landmark": {"tourism": True},
+        "hotel": {"tourism": "hotel"}, "museum": {"tourism": "museum"},
+        "attraction": {"tourism": "attraction"}, "viewpoint": {"tourism": "viewpoint"},
+        "historic": {"historic": True}, "castle": {"historic": "castle"},
+        "monument": {"historic": "monument"}, "ruins": {"historic": "ruins"},
+        # power / barrier / office / boundary
+        "power": {"power": True}, "substation": {"power": "substation"},
+        "barrier": {"barrier": True}, "fence": {"barrier": "fence"},
+        "wall": {"barrier": "wall"}, "gate": {"barrier": "gate"},
+        "office": {"office": True}, "boundary": {"boundary": "administrative"},
     }
 
     def __init__(self, agent):
