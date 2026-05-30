@@ -1,0 +1,71 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "geo-agents"
+version = "2.1.0"
+description = "A modular GIS agent suite: discover, reproject, analyse, and map geospatial data from a single text request."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Your Name", email = "you@example.com" }]
+keywords = ["gis", "geospatial", "agent", "openstreetmap", "geopandas", "llm"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: GIS",
+]
+
+# Base install stays light. The actual GIS work needs the [gis] extra; the
+# package still IMPORTS without it (each capability reports a clear error only
+# when you try to run it without the right library).
+dependencies = []
+
+[project.optional-dependencies]
+# The geospatial stack that the capabilities actually call.
+gis = [
+    "geopandas>=0.14",
+    "shapely>=2.0",
+    "pyproj>=3.5",
+    "folium>=0.15",
+    "mapclassify>=2.6",
+    "matplotlib>=3.7",
+    "rasterio>=1.3",
+    "rasterstats>=0.19",
+    "libpysal>=4.9",
+    "esda>=2.5",
+    "osmnx>=1.9",
+]
+# Talk to an LLM provider (Ollama / Groq / Gemini / OpenAI) via the OpenAI SDK.
+ai = ["openai>=1.30"]
+# Interactive panel inside Jupyter.
+notebook = ["ipywidgets>=8.0"]
+# Everything, for a full local setup.
+all = [
+    "geopandas>=0.14", "shapely>=2.0", "pyproj>=3.5", "folium>=0.15",
+    "mapclassify>=2.6", "matplotlib>=3.7", "rasterio>=1.3", "rasterstats>=0.19",
+    "libpysal>=4.9", "esda>=2.5", "osmnx>=1.9", "openai>=1.30", "ipywidgets>=8.0",
+]
+# For running the test suite.
+dev = ["pytest>=7.0"]
+
+[project.urls]
+Homepage = "https://github.com/Fatemebookanian/geo-agents"
+Repository = "https://github.com/Fatemebookanian/geo-agents"
+Issues = "https://github.com/Fatemebookanian/geo-agents/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
